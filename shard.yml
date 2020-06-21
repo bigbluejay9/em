@@ -1,0 +1,16 @@
+name: em
+version: 0.1.0
+
+authors:
+  - Thinsit (Laza) Upatising <lazau@lazau.com>
+
+description: |
+  Puts the described emoji into your clipboard 😄.
+
+targets:
+  em:
+    main: src/em.cr
+
+crystal: 0.34.0
+
+license: MIT
