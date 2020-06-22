@@ -19,6 +19,11 @@ task :clean do
   sh "rm -f unicode-data/*"
 end
 
+task install: :build do
+  sh "cp bin/em /usr/local/bin/em"
+  sh "chmod 755 /usr/local/bin/em"
+end
+
 emoji_data = {
   "emoji-data.txt" =>
     "https://www.unicode.org/Public/13.0.0/ucd/emoji/emoji-data.txt",
