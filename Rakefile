@@ -4,8 +4,14 @@ task :test do
   sh "crystal spec"
 end
 
-task :build do
+task build: ["bin/em"]
+
+file "bin/em": ["src/em.cr"] do
   sh "shards build em"
+end
+
+task run: :build do
+  sh "crystal run src/em.cr"
 end
 
 task :clean do
@@ -32,3 +38,5 @@ emoji_data.each do |file_name, source|
   end
   task build: "unicode-data/#{file_name}"
 end
+
+#file "unicode-data/cldr
