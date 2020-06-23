@@ -18,13 +18,13 @@ rake install
 
 
 ```sh
-# Puts 😉 into your clipboard.
-em wink
+# Puts 🤣 into your pasteboard.
+em floor laugh
 
-# Puts 💦 into your clipboard.
-em sweat
+# Puts 💦 into your pasteboard.
+em droplet
 
-# Puts 🥵 into your clipboard.
+# Puts 🥵 into your pasteboard.
 em hot face
 ```
 
