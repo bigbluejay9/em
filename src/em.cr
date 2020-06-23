@@ -3,7 +3,7 @@ require "xml"
 require "log"
 
 module Em
-  VERSION = "0.1.0"
+  VERSION = "1.0.0"
 
   BANNER = <<-BANNER
     Usage: em [<flags>...] [search terms]
@@ -25,6 +25,9 @@ module Em
   VERSION_INFO
 
   MAX_RESULTS = 10
+
+  CLDR_DATA_DIR  = "/usr/local/share/unicode_cldr/v37/"
+  EN_ANNOTATIONS = "common/annotations/en.xml"
 end
 
 include Em
@@ -75,23 +78,29 @@ class EmojiData
   property unicode_properties = [] of Symbol
 end
 
+en_data = File.join(CLDR_DATA_DIR, EN_ANNOTATIONS)
+unless File.file?(en_data)
+  puts "Canont find Unicode CLDR EN data at #{en_data}. Did you run `rake install`?"
+  exit 1
+end
+
 # Parse CLDR Data
 emojis = {} of String => EmojiData
-XML.parse(File.read("unicode-data/en.xml")).
-  xpath_node("//ldml/annotations").not_nil!.
-  children.select(&.element?).each do |a|
-    codepoint = a["cp"]
-    data = emojis[codepoint]? || EmojiData.new
+XML.parse(File.read(en_data))
+  .xpath_node("//ldml/annotations").not_nil!
+  .children.select(&.element?).each do |a|
+  codepoint = a["cp"]
+  data = emojis[codepoint]? || EmojiData.new
 
-    if a["type"]? == "tts"
-      data.tts = a.content
-    end
-    data.descriptions.concat(
-      a.content.split("|", remove_empty: true).map(&.strip.downcase))
+  if a["type"]? == "tts"
+    data.tts = a.content
+  end
+  data.descriptions.concat(
+    a.content.split("|", remove_empty: true).map(&.strip.downcase))
 
-    unless emojis.has_key?(codepoint)
-      emojis[codepoint] = data
-    end
+  unless emojis.has_key?(codepoint)
+    emojis[codepoint] = data
+  end
 end
 
 full_search = terms.join(" ")

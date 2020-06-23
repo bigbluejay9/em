@@ -11,7 +11,7 @@ Puts the described emoji into your clipboard 😄.
 
 ```sh
 # Do not run as root.
-make install
+rake install
 ```
 
 ## Usage
