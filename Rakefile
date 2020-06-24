@@ -2,13 +2,17 @@ require "tmpdir"
 
 task default: :build
 
-task :test do
+task test: :build do
   sh "crystal spec"
 end
 
 task build: ["bin/em"]
 
-file "bin/em": ["src/em.cr"] do
+FileList['src/*.cr'].each do |f|
+  file "bin/em" => f
+end
+
+file "bin/em" do
   sh "shards build em"
 end
 
@@ -18,6 +22,7 @@ end
 
 task :clean do
   sh "shards prune"
+  sh "rm src/generated_emoji_data.cr"
   sh "rm -rf bin/ lib/ docs/ .shards/"
 end
 
@@ -29,14 +34,6 @@ task install: :build do
 
   sh "sudo cp bin/em /usr/local/bin/em"
   sh "sudo chmod 755 /usr/local/bin/em"
-  Dir.mktmpdir do |dir|
-    output = File.join(dir, "cldr_v37_core.zip")
-    sh "curl -s https://www.unicode.org/Public/cldr/37/core.zip -o #{output}"
-
-    sh "sudo mkdir -p /usr/local/share/unicode_cldr/v37/"
-    sh "sudo chmod -R 755 /usr/local/share/unicode_cldr/v37/"
-    sh "sudo unzip -oqq #{output} -d /usr/local/share/unicode_cldr/v37"
-  end
 end
 
 #emoji_data = {
